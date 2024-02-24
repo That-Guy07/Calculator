@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:calculator/widgets/keyboard_button.dart';
 
-final List<String> buttonValues = [
+List<String> _buttonTexts = [
   'C',
   '()',
   '%',
@@ -9,7 +9,7 @@ final List<String> buttonValues = [
   '7',
   '8',
   '9',
-  '×',
+  'x',
   '4',
   '5',
   '6',
@@ -25,7 +25,12 @@ final List<String> buttonValues = [
 ];
 
 class KeyboardWidget extends StatelessWidget {
-  const KeyboardWidget({super.key});
+  const KeyboardWidget({
+    super.key,
+    required this.onPressed,
+  });
+
+  final void Function(String) onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +46,14 @@ class KeyboardWidget extends StatelessWidget {
             crossAxisCount: 4,
           ),
           children: [
-            ...buttonValues.map(
-              (text) => KeyboardButtonWidget(text: text),
-            ),
+            ..._buttonTexts.map(
+              (text) => KeyboardButtonWidget(
+                text: text,
+                onPressed: (data) {
+                  onPressed(data);
+                },
+              ),
+            )
           ],
         ),
       ),
