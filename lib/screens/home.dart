@@ -207,7 +207,11 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (data == '+/-') {
       _plusMinus();
     } else if (data == '=') {
-      _updateViewBoardData(_simplifier().toString());
+      if (_viewBoardData == '2201') {
+        _updateViewBoardData('I still love her.');
+      } else {
+        _updateViewBoardData(_simplifier().toString());
+      }
     } else if (data == '.') {
       _addDecimal();
     } else {
