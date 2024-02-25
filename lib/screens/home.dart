@@ -152,7 +152,9 @@ class _HomeScreenState extends State<HomeScreen> {
         _viewBoardData.endsWith('÷') ||
         _viewBoardData.endsWith('+') ||
         _viewBoardData.endsWith('-') ||
-        _viewBoardData.endsWith('%')) {
+        _viewBoardData.endsWith('%') ||
+        _viewBoardData.endsWith('(') ||
+        _viewBoardData == '0') {
     } else {
       _addViewBoardData('%');
     }
