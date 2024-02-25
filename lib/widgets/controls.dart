@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ControlsWidget extends StatelessWidget {
-  const ControlsWidget({Key? key}) : super(key: key);
+  const ControlsWidget({
+    super.key,
+    required this.backspace,
+  });
+
+  final void Function() backspace;
 
   @override
   Widget build(BuildContext context) {
@@ -15,14 +20,20 @@ class ControlsWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: IconButton(
-                  icon: const Icon(Icons.refresh),
+                  icon: const Icon(Icons.history),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.compare_arrows),
                   onPressed: () {},
                 ),
               ),
               Expanded(
                 child: IconButton(
                   icon: const Icon(Icons.backspace),
-                  onPressed: () {},
+                  onPressed: backspace,
                 ),
               ),
             ],

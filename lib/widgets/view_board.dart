@@ -20,23 +20,15 @@ class _ViewBoardWidgetState extends State<ViewBoardWidget> {
       child: Container(
         padding: const EdgeInsets.all(20),
         color: Theme.of(context).colorScheme.background,
-        // child: TextField(
-        //   autofocus: true,
-        //   textAlign: TextAlign.right,
-        //   style: Theme.of(context).textTheme.titleLarge!.copyWith(
-        //         fontSize: 30,
-        //       ),
-        //   keyboardType: TextInputType.none,
-        //   decoration: const InputDecoration(
-        //     border: InputBorder.none,
-        //     contentPadding: EdgeInsets.all(30),
-        //   ),
-        // ),
         child: Text(
+          maxLines: 2,
+          overflow: TextOverflow.fade,
           widget.viewBoardData,
           textAlign: TextAlign.right,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 fontSize: 40,
+                color:
+                    Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
               ),
         ),
       ),
