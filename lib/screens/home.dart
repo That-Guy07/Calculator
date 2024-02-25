@@ -48,6 +48,51 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _addNumber(String data) {
+    if (_viewBoardData.endsWith('%')) {
+      _addViewBoardData('x$data');
+    } else {
+      _addViewBoardData(data);
+    }
+  }
+
+  void _addDecimal() {
+    int operatorCount = 0;
+    int decimalCount = 0;
+    if (_viewBoardData == '0') {
+      _addViewBoardData('0.');
+    } else {
+      for (int i = 0; i < _viewBoardData.length; i++) {
+        if (_viewBoardData[i] == '+' ||
+            _viewBoardData[i] == '-' ||
+            _viewBoardData[i] == 'x' ||
+            _viewBoardData[i] == '÷') {
+          operatorCount++;
+        }
+      }
+      for (int i = 0; i < _viewBoardData.length; i++) {
+        if (_viewBoardData[i] == '.') {
+          decimalCount++;
+        }
+      }
+      if (decimalCount == 0) {
+        _addViewBoardData('.');
+      } else if (decimalCount - operatorCount == 0) {
+        if (_viewBoardData.endsWith('+') ||
+            _viewBoardData.endsWith('-') ||
+            _viewBoardData.endsWith('x') ||
+            _viewBoardData.endsWith('÷') ||
+            _viewBoardData.endsWith('%') ||
+            _viewBoardData.endsWith('(') ||
+            _viewBoardData.endsWith(')')) {
+          _addViewBoardData('0.');
+        } else {
+          _addViewBoardData('.');
+        }
+      }
+    }
+  }
+
   void _plusMinus() {
     setState(() {
       if (_viewBoardData.startsWith('-')) {
@@ -72,6 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
         _addViewBoardData('(');
       } else if (_viewBoardData.endsWith(')') && _bracketCount == 0) {
         _addViewBoardData('x(');
+      } else if (_bracketCount == 0) {
+        _addViewBoardData('x(');
       } else if (_viewBoardData.endsWith('%')) {
         _addViewBoardData('(');
       } else if (_viewBoardData.endsWith('÷')) {
@@ -88,12 +135,35 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _addOperator(String data) {
+    if (_viewBoardData.endsWith('x') ||
+        _viewBoardData.endsWith('÷') ||
+        _viewBoardData.endsWith('+') ||
+        _viewBoardData.endsWith('-')) {
+      _removeLastViewBoardData();
+      _addViewBoardData(data);
+    } else {
+      _addViewBoardData(data);
+    }
+  }
+
+  void _addPercentage() {
+    if (_viewBoardData.endsWith('x') ||
+        _viewBoardData.endsWith('÷') ||
+        _viewBoardData.endsWith('+') ||
+        _viewBoardData.endsWith('-') ||
+        _viewBoardData.endsWith('%')) {
+    } else {
+      _addViewBoardData('%');
+    }
+  }
+
   dynamic _simplifier() {
     dynamic result = 0;
     List<dynamic> values = [];
 
     if (_viewBoardData.contains('%')) {
-      _viewBoardData = _viewBoardData.replaceAll('%', '/100*');
+      _viewBoardData = _viewBoardData.replaceAll('%', '/100');
     }
     if (_viewBoardData.contains('x')) {
       _viewBoardData = _viewBoardData.replaceAll('x', '*');
@@ -104,12 +174,16 @@ class _HomeScreenState extends State<HomeScreen> {
     values = _viewBoardData.split('');
     result = values.join();
     Parser P = Parser();
-    Expression exp = P.parse(result);
-    result = exp.evaluate(EvaluationType.REAL, ContextModel());
+    try {
+      Expression exp = P.parse(result);
+      result = exp.evaluate(EvaluationType.REAL, ContextModel());
+    } catch (e) {
+      print(e);
+    }
 
-    print(values);
-    print(result);
-    print(result.runtimeType);
+    // print(values);
+    // print(result);
+    // print(result.runtimeType);
     return result;
   }
 
@@ -119,21 +193,23 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (data == '()') {
       _addBracket();
     } else if (data == '%') {
-      _addViewBoardData('%');
+      _addPercentage();
     } else if (data == '÷') {
-      _addViewBoardData('÷');
+      _addOperator('÷');
     } else if (data == 'x') {
-      _addViewBoardData('x');
+      _addOperator('x');
     } else if (data == '-') {
-      _addViewBoardData('-');
+      _addViewBoardData(data);
     } else if (data == '+') {
-      _addViewBoardData('+');
+      _addOperator('+');
     } else if (data == '+/-') {
       _plusMinus();
     } else if (data == '=') {
       _updateViewBoardData(_simplifier().toString());
+    } else if (data == '.') {
+      _addDecimal();
     } else {
-      _addViewBoardData(data);
+      _addNumber(data);
     }
   }
 
@@ -142,7 +218,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 3,
-        title: const Text('Calculator'),
+        title: Text(
+          'Calculator',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color:
+                    Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+              ),
+        ),
       ),
       body: Center(
         child: Column(

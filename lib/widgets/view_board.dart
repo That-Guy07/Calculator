@@ -27,7 +27,8 @@ class _ViewBoardWidgetState extends State<ViewBoardWidget> {
           textAlign: TextAlign.right,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 fontSize: 40,
-                color: Theme.of(context).colorScheme.onBackground,
+                color:
+                    Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
               ),
         ),
       ),

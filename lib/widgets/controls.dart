@@ -20,7 +20,13 @@ class ControlsWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: IconButton(
-                  icon: const Icon(Icons.refresh),
+                  icon: const Icon(Icons.history),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.compare_arrows),
                   onPressed: () {},
                 ),
               ),
