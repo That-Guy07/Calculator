@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:calculator/widgets/view_board.dart';
 import 'package:calculator/widgets/controls.dart';
 import 'package:calculator/widgets/keyboard.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 String _viewBoardData = '0';
 
@@ -87,37 +88,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // String _simplifier() {
-  //   List<String> values = [];
-  //   String result = '0';
-  //   if (_viewBoardData.contains('x')) {
-  //     values = _viewBoardData.split('x');
-  //     result = (double.parse(values[0]) * double.parse(values[1])).toString();
-  //   }
-  //   if (_viewBoardData.contains('÷')) {
-  //     values = _viewBoardData.split('÷');
-  //     result = (double.parse(values[0]) / double.parse(values[1])).toString();
-  //   }
-  //   if (_viewBoardData.contains('%')) {
-  //     values = _viewBoardData.split('%');
-  //     result = (double.parse(values[0]) % double.parse(values[1])).toString();
-  //   }
-  //   if (_viewBoardData.contains('+')) {
-  //     values = _viewBoardData.split('+');
-  //     result = (double.parse(values[0]) + double.parse(values[1])).toString();
-  //   }
-  //   if (_viewBoardData.contains('-')) {
-  //     values = _viewBoardData.split('-');
-  //     result = (double.parse(values[0]) - double.parse(values[1])).toString();
-  //   }
-  //   print(values);
-  //   return result;
-  // }
-
   dynamic _simplifier() {
-    dynamic result = '10 + 2';
+    dynamic result = 0;
     List<dynamic> values = [];
-    // double i = (1 / 100 * (5 * 8));
 
     if (_viewBoardData.contains('%')) {
       _viewBoardData = _viewBoardData.replaceAll('%', '/100*');
@@ -129,15 +102,11 @@ class _HomeScreenState extends State<HomeScreen> {
       _viewBoardData = _viewBoardData.replaceAll('÷', '/');
     }
     values = _viewBoardData.split('');
-    for (int i = 0; i < values.length; i++) {
-      try {
-        values[i] = int.parse(values[i]);
-      } catch (e) {
-        print(values[i] + ' is not a number');
-      }
-    }
+    result = values.join();
+    Parser P = Parser();
+    Expression exp = P.parse(result);
+    result = exp.evaluate(EvaluationType.REAL, ContextModel());
 
-    // result = values.join();
     print(values);
     print(result);
     print(result.runtimeType);
