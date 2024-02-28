@@ -3,8 +3,14 @@ import 'package:calculator/widgets/view_board.dart';
 import 'package:calculator/widgets/controls.dart';
 import 'package:calculator/widgets/keyboard.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'dart:async';
+import 'package:uuid/uuid.dart';
 
+var uuid = const Uuid();
 String _viewBoardData = '0';
+Map<String, List<String>> _history = {};
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +22,31 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/history.text');
+  }
+
+  Future<File> _writeHistory(String data) async {
+    final file = await _localFile;
+    return file.writeAsString(data);
+  }
+
+  Future<String> readHistory() async {
+    try {
+      final file = await _localFile;
+      String contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      return '[]';
+    }
+  }
+
   void _updateViewBoardData(String data) {
     setState(() {
       _viewBoardData = data;
@@ -142,6 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
         _viewBoardData.endsWith('-')) {
       _removeLastViewBoardData();
       _addViewBoardData(data);
+    } else if (_viewBoardData == '0') {
+      _addViewBoardData('0$data');
     } else {
       _addViewBoardData(data);
     }
@@ -161,6 +194,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   dynamic _simplifier() {
+    final uniqueId = uuid.v1();
+    final _viewBoardDataCopy = _viewBoardData;
+
     dynamic result = 0;
     List<dynamic> values = [];
 
@@ -179,13 +215,12 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       Expression exp = P.parse(result);
       result = exp.evaluate(EvaluationType.REAL, ContextModel());
+      _history[uniqueId] = [_viewBoardDataCopy, result.toString()];
+      _writeHistory(_history.toString());
     } catch (e) {
-      print(e);
+      // print(e);
     }
-
-    // print(values);
-    // print(result);
-    // print(result.runtimeType);
+    print(_history);
     return result;
   }
 
@@ -209,6 +244,8 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (data == '=') {
       if (_viewBoardData == '2201') {
         _updateViewBoardData('I still love her.');
+      } else if (_viewBoardData == '2606') {
+        _updateViewBoardData('Pranami Chutiya hai.');
       } else {
         _updateViewBoardData(_simplifier().toString());
       }
@@ -221,6 +258,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final _screenHeight = MediaQuery.of(context).size.height - kToolbarHeight;
+    final _screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         elevation: 3,
@@ -235,13 +274,20 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: Column(
           children: [
-            ViewBoardWidget(viewBoardData: _viewBoardData),
+            ViewBoardWidget(
+              viewBoardData: _viewBoardData,
+              screenHeight: _screenHeight,
+              screenWidth: _screenWidth,
+            ),
             const Spacer(),
             ControlsWidget(
               backspace: _removeLastViewBoardData,
+              readHistory: readHistory,
             ),
             KeyboardWidget(
               onPressed: _onPressed,
+              screenHeight: _screenHeight,
+              screenWidth: _screenWidth,
             ),
           ],
         ),

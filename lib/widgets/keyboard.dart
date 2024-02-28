@@ -28,17 +28,21 @@ class KeyboardWidget extends StatelessWidget {
   const KeyboardWidget({
     super.key,
     required this.onPressed,
+    required this.screenHeight,
+    required this.screenWidth,
   });
 
   final void Function(String) onPressed;
+  final double screenHeight;
+  final double screenWidth;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 550,
+      height: (screenWidth / 4) * 5,
       width: double.infinity,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(5, 20, 5, 5),
+        padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
         alignment: Alignment.center,
         color: Theme.of(context).colorScheme.background,
         child: GridView(

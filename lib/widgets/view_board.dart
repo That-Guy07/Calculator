@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
 class ViewBoardWidget extends StatefulWidget {
-  const ViewBoardWidget({super.key, required this.viewBoardData});
+  const ViewBoardWidget({
+    super.key,
+    required this.viewBoardData,
+    required this.screenHeight,
+    required this.screenWidth,
+  });
 
   final String viewBoardData;
+  final double screenHeight;
+  final double screenWidth;
 
   @override
   State<ViewBoardWidget> createState() {
@@ -15,10 +22,13 @@ class _ViewBoardWidgetState extends State<ViewBoardWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 180,
+      height: 145,
       width: double.infinity,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 10,
+        ),
         color: Theme.of(context).colorScheme.background,
         child: Text(
           maxLines: 2,

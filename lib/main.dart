@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:calculator/screens/home.dart';
+import 'package:flutter/services.dart';
 
 final theme = ThemeData(
   useMaterial3: true,
@@ -19,6 +20,11 @@ final themeDark = ThemeData(
 );
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(
     const App(),
   );
